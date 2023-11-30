@@ -4,7 +4,7 @@ import random
 import os
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 class Cafe(db.Model):
@@ -42,7 +42,7 @@ with app.app_context():
 def get_random_cafe():
     random_cafe = db.session.execute(db.select(Cafe).order_by(db.sql.func.random()).limit(1)).scalar()
     print(random_cafe)
-    return jsonify(Cafe=random_cafe.to_dict())
+    return jsonify(Cafe=cafe.to_dict() for cafe in random_cafe)
 
 @app.route("/all")
 def get_all_cafes():
